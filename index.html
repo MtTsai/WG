@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Hello World</title>
 </head>
-  <script src="{{ url_for('static', filename='pixi/pixi.min.js') }} "></script>
+  <script src="/static/pixi/pixi.min.js'"></script>
 <body>
   <script type="text/javascript">
     let type = "WebGL"
@@ -39,15 +39,6 @@
         });
 	}
 
-  </script>
-
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
-
-  <script type="text/javascript">
 	function enlarge() {
 		app.renderer.resize(app.view.width * 2, app.view.height * 2);
 		dog.width  *= 2
