@@ -20,24 +20,54 @@
 	//Add the canvas that Pixi automatically created for you to the HTML document
 	document.body.appendChild(app.view);
 
-	PIXI.loader.add("/static/images/dog.png").load(setup)
-	var dog
+	PIXI.loader
+        .add("/static/images/dog.png")
+        .add('spritesheet', '/static/images/mc.json')
+        .load(setup)
+	var con10 = new PIXI.Container()
+
 	function setup() {
-		dog = new PIXI.Sprite(PIXI.loader.resources["/static/images/dog.png"].texture);
-        dog.width /= 10
-        dog.height /= 10
-		app.stage.addChild(dog)
-        console.log("PIXI.loader.load()")
+		var dog = new PIXI.Sprite(PIXI.loader.resources["/static/images/dog.png"].texture);
+        var rect = new_rect(0xff0000, 0, 0, dog.width, dog.height);
+
+        rect.mask = dog
+
+        con10.addChild(rect)
+        con10.addChild(dog)
+
+		app.stage.addChild(con10);
+        console.log("PIXI.loader.load()");
         app.ticker.add(function(delta) {
             var mouseX = app.renderer.plugins.interaction.mouse.global.x;
             var mouseY = app.renderer.plugins.interaction.mouse.global.y;
-            var targetX = mouseX - dog.width / 2;
-            var targetY = mouseY - dog.height / 2;
+            var targetX = mouseX - con10.width / 2;
+            var targetY = mouseY - con10.height / 2;
 
-            dog.x += (targetX - dog.x) * 0.0625;
-            dog.y += (targetY - dog.y) * 0.0625;
+            con10.x += (targetX - con10.x) * 0.0625;
+            con10.y += (targetY - con10.y) * 0.0625;
         });
+
+		var explosionTextures = [],
+			i;
+
+		for (i = 0; i < 26; i++) {
+			 var texture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
+			 explosionTextures.push(texture);
+		}
+
+        var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
+        app.stage.addChild(explosion);
+        explosion.play();
 	}
+
+    function new_rect(color, x, y, w, h) {
+        var rect = new PIXI.Graphics();
+        rect.beginFill(color);
+        rect.drawRect(x, y, w, h);
+        rect.endFill();
+        return rect;
+    }
+
 
   </script>
 
@@ -49,14 +79,20 @@
 
   <script type="text/javascript">
 	function enlarge() {
-		app.renderer.resize(app.view.width * 2, app.view.height * 2);
-		dog.width  *= 2
-		dog.height *= 2
+		// app.renderer.resize(app.view.width * 2, app.view.height * 2);
+		con10.width  *= 2
+		con10.height *= 2
+	}
+	function shrink() {
+		// app.renderer.resize(app.view.width * 2, app.view.height * 2);
+		con10.width  /= 2
+		con10.height /= 2
 	}
 
   </script>
 
   <button onclick="enlarge()">enlarge</button>
+  <button onclick="shrink()">shrink</button>
 
 </body>
 </html>
