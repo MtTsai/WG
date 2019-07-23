@@ -16,7 +16,7 @@ Bullet.prototype.set_radius = function(radius) {
     this.image.endFill();
 }
 
-Bullet.prototype.explosion = function() {
+Bullet.prototype.explosion = function(callback = () => {}) {
     var exp = new Explosion();
     var b = this.image;
     
@@ -24,10 +24,10 @@ Bullet.prototype.explosion = function() {
 
     exp.image.onComplete = function() {
         b.removeChild(exp.image)
+        callback()
     };
     exp.image.play();
 }
-
 
 /* player */
 function Player(_color = 0xff0000) {

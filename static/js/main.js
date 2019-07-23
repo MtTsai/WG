@@ -41,13 +41,12 @@ function setup() {
         player.image.y += (targetY - player.image.y) * 0.0625;
     });
 
-    player.image.interactive = true;
-    player.image.on('mousedown', function() {
+    var shot_func = function(_color) {
         console.log('shot');
 
         var _b = new sprite.Bullet(player.image.x + player.image.width / 2,
                                    player.image.y + player.image.height / 2,
-                                   0x0000ff);
+                                   _color);
 
         app.stage.addChild(_b.image);
 
@@ -61,16 +60,60 @@ function setup() {
             _b.elapsed -= delta;
 
             if (_b.elapsed < 0) {
-                app.stage.removeChild(_b.image);
                 _b.ticker.stop()
-                delete _b
+                _b.explosion(function() {
+                    app.stage.removeChild(_b.image);
+                    delete _b;
+                })
                 console.log('remove Bullet');
             }
 
         });
 
         _b.ticker.start();
+    };
+
+    player.image.interactive = true;
+
+    // For both
+    // .on('pointerdown', onDragStart)
+    // .on('pointerup', onDragEnd)
+    // .on('pointerupoutside', onDragEnd)
+    // .on('pointermove', onDragMove);
+    
+    // For mouse-only events
+    // .on('mousedown', onDragStart)
+    // .on('mouseup', onDragEnd)
+    // .on('mouseupoutside', onDragEnd)
+    // .on('mousemove', onDragMove);
+    
+    // For touch-only events
+    // .on('touchstart', onDragStart)
+    // .on('touchend', onDragEnd)
+    // .on('touchendoutside', onDragEnd)
+    // .on('touchmove', onDragMove);
+    player.image.on('pointerdown', function() {
+        shot_func(0x0000ff);
     });
+    player.image.click = _ => shot_func(0x00ff00);
+
+    // app.stage.interactive = true;
+    // app.stage.click = _ => shot_func(0xffffff);
+
+    window.onkeydown = function(e) {
+        var key = e.keyCode ? e.keyCode : e.which;
+    
+        if (key == 32) { // space
+            shot_func(0xffffff);
+        }
+    }
+    window.onkeyup = function(e) {
+        var key = e.keyCode ? e.keyCode : e.which;
+    
+        if (key == 32) { // space
+            shot_func(0xf000f0);
+        }
+    }
 }
 
 var b;
