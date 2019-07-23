@@ -116,16 +116,18 @@ function setup() {
     }
 }
 
-var b;
 function enlarge() {
     // app.renderer.resize(app.view.width * 2, app.view.height * 2);
     player.image.width  *= 2
     player.image.height *= 2
 
-    b = new sprite.Bullet(200, 200);
+    var b = new sprite.Bullet(200, 200);
     app.stage.addChild(b.image);
 
-    b.explosion();
+    b.explosion(function() {
+        app.stage.removeChild(b.image);
+        delete b;
+    })
 }
 
 function shrink() {
@@ -133,7 +135,12 @@ function shrink() {
     player.image.width  /= 2
     player.image.height /= 2
 
+    var b = new sprite.Bullet(200, 200);
     b.set_radius(50);
+    app.stage.addChild(b.image);
 
-    b.explosion();
+    b.explosion(function() {
+        app.stage.removeChild(b.image);
+        delete b;
+    })
 }
