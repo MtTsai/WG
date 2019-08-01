@@ -41,13 +41,7 @@ function setup() {
         player.image.y += (targetY - player.image.y) * 0.0625;
     });
 
-    var shot_func = function(_color) {
-        console.log('shot');
-
-        var _b = new sprite.Bullet(player.image.x + player.image.width / 2,
-                                   player.image.y + player.image.height / 2,
-                                   _color);
-
+    var shot = function(_b) {
         app.stage.addChild(_b.image);
 
         _b.elapsed = 300;
@@ -56,11 +50,17 @@ function setup() {
         _b.ticker.autoStart = false;
 
         _b.ticker.add(function(delta) {
+            // move
             _b.image.x += 1;
-            _b.elapsed -= delta;
+            // enlarge
+            _b.set_radius((300 - _b.elapsed) / 20)
 
+            _b.elapsed -= delta;
             if (_b.elapsed < 0) {
                 _b.ticker.stop()
+
+                // clear circle first, then explosion
+                _b.image.clear()
                 _b.explosion(function() {
                     app.stage.removeChild(_b.image);
                     delete _b;
@@ -72,6 +72,25 @@ function setup() {
 
         _b.ticker.start();
     };
+
+    var shot_bullet = function(_color) {
+        console.log('shot');
+
+        var _b = new sprite.Bullet(player.image.x + player.image.width / 2,
+                                   player.image.y + player.image.height / 2,
+                                   _color);
+
+        shot(_b);
+    }
+    var shot_rainbow_bullet = function() {
+        console.log('shot rainbow');
+
+        var _b = new sprite.RainbowBullet(player.image.x + player.image.width / 2,
+                                          player.image.y + player.image.height / 2);
+
+        shot(_b);
+    }
+
 
     player.image.interactive = true;
 
@@ -93,25 +112,25 @@ function setup() {
     // .on('touchendoutside', onDragEnd)
     // .on('touchmove', onDragMove);
     player.image.on('pointerdown', function() {
-        shot_func(0x0000ff);
+        shot_rainbow_bullet();
     });
-    player.image.click = _ => shot_func(0x00ff00);
+    player.image.click = _ => shot_bullet(0x00ff00);
 
     // app.stage.interactive = true;
-    // app.stage.click = _ => shot_func(0xffffff);
+    // app.stage.click = _ => shot_bullet(0xffffff);
 
     window.onkeydown = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
     
         if (key == 32) { // space
-            shot_func(0xffffff);
+            shot_rainbow_bullet(0xffffff);
         }
     }
     window.onkeyup = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
     
         if (key == 32) { // space
-            shot_func(0xf000f0);
+            shot_bullet(0xf000f0);
         }
     }
 }
@@ -135,12 +154,9 @@ function shrink() {
     player.image.width  /= 2
     player.image.height /= 2
 
-    var b = new sprite.Bullet(200, 200);
-    b.set_radius(50);
-    app.stage.addChild(b.image);
+    var c = new sprite.Clover(200, 200);
+    c.set_radius(50);
+    app.stage.addChild(c.image);
 
-    b.explosion(function() {
-        app.stage.removeChild(b.image);
-        delete b;
-    })
+    window.setTimeout(() => app.stage.removeChild(c.image), 1000)
 }
