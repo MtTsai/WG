@@ -7,6 +7,12 @@ PIXI.utils.sayHello(type)
 //Create a Pixi Application
 let app = new PIXI.Application({width: 1024, height: 768});
 
+var bg = new PIXI.Graphics();
+bg.beginFill(0x000000);
+bg.drawRect(0, 0, 1024, 768);
+bg.endFill();
+app.stage.addChild(bg);
+
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
@@ -23,6 +29,7 @@ function setup() {
     player = new sprite.Player();
 
     app.stage.addChild(player.image);
+
 
     console.log("PIXI.loader.load()");
 
@@ -42,6 +49,7 @@ function setup() {
     });
 
     var shot = function(_b) {
+        _b.set_radius(0);
         app.stage.addChild(_b.image);
 
         _b.elapsed = 300;
@@ -53,14 +61,13 @@ function setup() {
             // move
             _b.image.x += 1;
             // enlarge
-            _b.set_radius((300 - _b.elapsed) / 20)
+            _b.set_radius((300 - _b.elapsed) / 10)
 
             _b.elapsed -= delta;
             if (_b.elapsed < 0) {
                 _b.ticker.stop()
 
-                // clear circle first, then explosion
-                _b.image.clear()
+                // clear bullet first, then explosion
                 _b.explosion(function() {
                     app.stage.removeChild(_b.image);
                     delete _b;
@@ -111,26 +118,22 @@ function setup() {
     // .on('touchend', onDragEnd)
     // .on('touchendoutside', onDragEnd)
     // .on('touchmove', onDragMove);
-    player.image.on('pointerdown', function() {
-        shot_rainbow_bullet();
-    });
-    player.image.click = _ => shot_bullet(0x00ff00);
+    // player.image.on('pointerdown', function() {})
+    // player.image.click = _ => shot_bullet(0x00ff00);
 
-    // app.stage.interactive = true;
+    app.stage.interactive = true;
     // app.stage.click = _ => shot_bullet(0xffffff);
+    app.stage.on('pointerdown', _ => shot_rainbow_bullet())
 
+    // window.onkeyup = function(e) {}
     window.onkeydown = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
     
         if (key == 32) { // space
-            shot_rainbow_bullet(0xffffff);
+            shot_rainbow_bullet()
         }
-    }
-    window.onkeyup = function(e) {
-        var key = e.keyCode ? e.keyCode : e.which;
-    
-        if (key == 32) { // space
-            shot_bullet(0xf000f0);
+        if (key == 87) { // W
+            shot_bullet()
         }
     }
 }
@@ -147,6 +150,12 @@ function enlarge() {
         app.stage.removeChild(b.image);
         delete b;
     })
+
+    var c = new sprite.RainbowBullet(200, 200);
+    c.set_radius(300);
+    app.stage.addChild(c.image);
+
+    window.setTimeout(() => app.stage.removeChild(c.image), 1000)
 }
 
 function shrink() {
