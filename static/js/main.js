@@ -150,12 +150,6 @@ function enlarge() {
         app.stage.removeChild(b.image);
         delete b;
     })
-
-    var c = new sprite.RainbowBullet(200, 200);
-    c.set_radius(300);
-    app.stage.addChild(c.image);
-
-    window.setTimeout(() => app.stage.removeChild(c.image), 1000)
 }
 
 function shrink() {
@@ -164,7 +158,7 @@ function shrink() {
     player.image.height /= 2
 
     var c = new sprite.Clover(200, 200);
-    c.set_radius(50);
+    c.set_radius(10);
     app.stage.addChild(c.image);
 
     window.setTimeout(() => app.stage.removeChild(c.image), 1000)

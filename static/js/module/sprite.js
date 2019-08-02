@@ -8,10 +8,12 @@ function Bullet(_x, _y, _color = 0x00ff00) {
     this.image.x = _x;
     this.image.y = _y;
 
-    this.bullet = new PIXI.Graphics();
-    this.bullet.beginFill(this.color);
-    this.bullet.drawCircle(0, 0, 1);
-    this.bullet.endFill();
+    // this.bullet = new PIXI.Graphics();
+    // this.bullet.beginFill(this.color);
+    // this.bullet.drawCircle(0, 0, 1);
+    // this.bullet.endFill();
+    this.bullet = new PIXI.Sprite(PIXI.loader.resources["images/dog.png"].texture);
+    this.bullet.tint = Math.floor(Math.random() * 0x1000000)
     this.image.addChild(this.bullet);
 
     this.set_radius(3);
@@ -82,7 +84,7 @@ function Clover(_x, _y, _color = 0xff00ff) {
     this.image.y = _y;
 
 
-    this.clover = drawRainbowCircle(); 
+    this.clover = drawClover();
     this.clover.tint = _color;
     this.image.addChild(this.clover);
 
