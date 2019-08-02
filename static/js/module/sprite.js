@@ -4,115 +4,94 @@
 function Bullet(_x, _y, _color = 0x00ff00) {
     this.color = _color;
 
-    this.image = new PIXI.Graphics();
+    this.image = new PIXI.Container();
     this.image.x = _x;
     this.image.y = _y;
 
-    this.image.clear();
-    this.image.beginFill(this.color);
-    this.image.drawCircle(0, 0, 1);
-    this.image.endFill();
+    this.bullet = new PIXI.Graphics();
+    this.bullet.beginFill(this.color);
+    this.bullet.drawCircle(0, 0, 1);
+    this.bullet.endFill();
+    this.image.addChild(this.bullet);
 
     this.set_radius(3);
 }
 
 Bullet.prototype.set_radius = function(radius) {
-    this.image.height = radius * 2
-    this.image.width = radius * 2
+    this.bullet.height = radius * 2
+    this.bullet.width = radius * 2
+
+    this.bullet.radius = radius
 }
 
 Bullet.prototype.explosion = function(callback = () => {}) {
-    var exp = new Explosion();
-    var b = this.image;
-    
-    b.addChild(exp.image);
+    var exp = new Explosion(this.bullet.radius * 4);
+    var con10 = this.image;
 
+    // clear bullet first, then explode
+    con10.removeChild(this.bullet);
+    delete this.bullet
+
+    con10.addChild(exp.image);
     exp.image.onComplete = function() {
-        b.removeChild(exp.image)
+        con10.removeChild(exp.image)
         callback()
     };
     exp.image.play();
 }
 
+/* rainbow bullet */
 function RainbowBullet(_x, _y) {
-    this.image = new PIXI.Graphics();
+    this.image = new PIXI.Container();
     this.image.x = _x;
     this.image.y = _y;
 
-    var totalCount = 360;
-    var radius = 1;
-    for(var i = 0;i< totalCount; i++){
-    	var colorArray = hsvToRGB2( i * 360 / totalCount, 1, 1);
-    	var color = colorArray[0] * 65536 + colorArray[1] * 256 + colorArray[2];
-    
-    	var arcGraphic = new PIXI.Graphics();
-        
-    		// draw the sector
-    		arcGraphic.beginFill(color, 1);
-    		arcGraphic.arc( 0, 0, radius, (0) * (Math.PI / 180), (1) * (Math.PI / 180) );
-    		arcGraphic.endFill();
-    
-    		// draw the triangle
-    		arcGraphic.beginFill(color, 1);
-    		arcGraphic.moveTo(0, 0);
-    		arcGraphic.lineTo(0, radius);
-    		arcGraphic.lineTo(Math.sin((Math.PI / 180) * (radius / Math.PI)),
-                              Math.cos((Math.PI / 180) * radius));
-    		arcGraphic.lineTo(0, 0);
-    		arcGraphic.endFill();
-    
-    		arcGraphic.rotation = i * (Math.PI / 180);
-    		this.image.addChild(arcGraphic);
-    }
-
-    this.base = this.image.height / 2
+    this.bullet = drawRainbowCircle();
+    this.image.addChild(this.bullet);
 
     this.set_radius(3);
 }
 
 RainbowBullet.prototype.set_radius = function(radius) {
-    this.image.height = radius * this.base
-    this.image.width = radius * this.base
+    this.bullet.height = radius * 2
+    this.bullet.width = radius * 2
+
+    this.bullet.radius = radius
 }
 
 RainbowBullet.prototype.explosion = function(callback = () => {}) {
-    var exp = new Explosion();
-    var b = this.image;
+    var exp = new Explosion(this.bullet.radius * 4);
+    var con10 = this.image;
 
-    b.addChild(exp.image);
+    // clear bullet first, then explode
+    con10.removeChild(this.bullet);
+    delete this.bullet
 
+    con10.addChild(exp.image);
     exp.image.onComplete = function() {
-        b.removeChild(exp.image)
+        con10.removeChild(exp.image)
         callback()
     };
     exp.image.play();
 }
 
+/* 4-leaf clover */
 function Clover(_x, _y, _color = 0xff00ff) {
-    this.image = new PIXI.Graphics();
+    this.image = new PIXI.Container();
+    this.image.x = _x;
+    this.image.y = _y;
 
-    this.image.beginFill(0xffffff);
-    this.image
-        .bezierCurveTo(0, 0, 100, 100, 100, 0).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, 100, -100, 100, 0).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, 100, -100, 0, -100).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, -100, -100, 0, -100).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, -100, -100, -100, 0).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, -100, 100, -100, 0).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, -100, 100, 0, 100).drawCircle(0, 0, 0)
-        .bezierCurveTo(0, 0, 100, 100, 0, 100).drawCircle(0, 0, 0)
-    this.image.endFill();
-    this.image.tint = _color
 
-    this.image.x = _x
-    this.image.y = _y
+    this.clover = drawRainbowCircle(); 
+    this.clover.tint = _color;
+    this.image.addChild(this.clover);
 
     this.set_radius(3)
 }
 
 Clover.prototype.set_radius = function(radius) {
-    this.image.height = radius * 2
-    this.image.width = radius * 2
+    this.clover.height = radius * 2
+    this.clover.width = radius * 2
 }
 
 /* player */
@@ -129,7 +108,7 @@ function Player(_color = 0xff0000) {
 }
 
 /* explosion */
-function Explosion() {
+function Explosion(radius = 10) {
     var explosionTextures = [],
         i;
 
@@ -142,7 +121,7 @@ function Explosion() {
 
     this.image.loop = false;
 
-    this.set_radius(4)
+    this.set_radius(radius)
 }
 
 Explosion.prototype.set_radius = function(radius) {
@@ -159,6 +138,51 @@ function new_rect(color, x, y, w, h) {
     rect.drawRect(x, y, w, h);
     rect.endFill();
     return rect;
+}
+
+function drawRainbowCircle() {
+    var image = new PIXI.Graphics();
+
+    var totalCount = 360;
+    var radius = 65536; // make high resolution
+    for (var i = 0;i <= totalCount; i++) {
+        var colorArray = hsvToRGB2( i * 360 / totalCount, 1, 1);
+        var color = colorArray[0] * 65536 + colorArray[1] * 256 + colorArray[2];
+    
+        // draw the sector
+        image.beginFill(color, 1);
+        image.arc( 0, 0, radius, (i) * (Math.PI / 180), (i + 1) * (Math.PI / 180) );
+        image.endFill();
+
+        // draw the triangle
+        image.beginFill(color, 1);
+        image.moveTo(0, 0);
+        image.lineTo(Math.sin(i * (Math.PI / 180) * radius),
+                     Math.cos(i * (Math.PI / 180) * radius));
+        image.lineTo(Math.sin((i + 1) * (Math.PI / 180) * radius),
+                     Math.cos((i + 1) * (Math.PI / 180) * radius));
+        image.lineTo(0, 0);
+        image.endFill();
+    }
+
+    return image
+}
+
+function drawClover() {
+    var image = new PIXI.Graphics();
+
+    image.beginFill(0xffffff);
+    image.bezierCurveTo(0, 0, 100, 100, 100, 0).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, 100, -100, 100, 0).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, 100, -100, 0, -100).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, -100, -100, 0, -100).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, -100, -100, -100, 0).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, -100, 100, -100, 0).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, -100, 100, 0, 100).drawCircle(0, 0, 0)
+         .bezierCurveTo(0, 0, 100, 100, 0, 100).drawCircle(0, 0, 0)
+    image.endFill();
+
+    return image
 }
 
 function hsvToRGB2(hue, saturation, value) {
