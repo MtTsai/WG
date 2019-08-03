@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
+    "build": "electron-packager . WG --out out --overwrite --platform=linux --arch=x64 --prune=true --squirrel-install --ignore=node_modules/electron-* --electron-version=1.7.9 --version-string.CompanyName= --version-string.ProductName=WG",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "electron-packager": "^14.0.4"
+  }
 }
