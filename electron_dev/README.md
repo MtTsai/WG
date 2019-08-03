@@ -19,3 +19,13 @@ electron-packager <source_dir> <app_name>
     --version-string.CompanyName=<name>
     --version-string.ProductName=<name>
 ```
+
+```bash
+$ ln -s ../static web_src
+
+# Running App directly
+$ npm start
+
+# Build APP executable
+$ npm run build
+```

@@ -30,7 +30,7 @@ function createWindow() {
     })
 
     win.loadURL(url.format({
-        pathname: path.join(__dirname, '..', 'static', 'index.html'),
+        pathname: path.join(__dirname, 'web_src', 'index.html'),
         protocol: 'file:',
         slashes: true
     }))
