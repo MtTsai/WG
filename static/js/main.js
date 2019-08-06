@@ -7,29 +7,79 @@ PIXI.utils.sayHello(type)
 //Create a Pixi Application
 let app = new PIXI.Application({width: 1024, height: 768});
 
-var bg = new PIXI.Graphics();
-bg.beginFill(0x000000);
-bg.drawRect(0, 0, 1024, 768);
-bg.endFill();
-app.stage.addChild(bg);
+var bg;
 
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
 PIXI.loader
     .add("images/dog.png")
+    .add("images/land.jpg")
     .add('spritesheet', 'images/mc.json')
     .load(setup)
 
 
 const sprite = require('sprite');
 
+class Ripple {
+  constructor(x, y, stage) {
+    // sprite
+    // https://i.imgur.com/kr2RVKW.png
+    // http://i.imgur.com/MfPhT1Y.png
+    this.sprite = PIXI.Sprite.fromImage("http://i.imgur.com/MfPhT1Y.png");
+    this.sprite.anchor.set(0.5);
+    this.sprite.position.set(x, y);
+    this.sprite.scale.set(8);
+    stage.addChild(this.sprite);
+    this.filter = new PIXI.filters.DisplacementFilter(this.sprite);
+  }
+
+  update() {
+    this.sprite.scale.x += 0.1;
+    this.sprite.scale.y += 0.1;
+  }
+}
+
 var player;
 function setup() {
+    /* Background */
+    bg = new PIXI.Container();
+    app.stage.addChild(bg);
+
+    land = new PIXI.Sprite(PIXI.loader.resources["images/land.jpg"].texture);
+    app.renderer.resize(land.width, land.height);
+
+
+    /* ripple */
+    var displace = PIXI.Sprite.fromImage("http://i.imgur.com/2yYayZk.png");
+    var filter = new PIXI.filters.DisplacementFilter(displace);
+    filter.autoFit = true;
+    displace.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+    displace.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+    displace.scale.y = 1;
+    displace.scale.x = 1;
+
+    bg.addChild(displace);
+    bg.addChild(land);
+
+	let ripples = [];
+	app.ticker.add(() => {
+		ripples.forEach(ripple => ripple.update());
+	});
+
+	bg.filter = [filter, ...ripples.map(f => f.filter)];
+
+	let show_ripple = ev => {
+        console.log('shot ripple');
+	    var {x, y} = ev.data.getLocalPosition(bg);
+	    ripples.push(new Ripple(x, y, bg));
+	    bg.filters = [filter, ...ripples.map(f => f.filter)];
+	};
+
+    /* Play */
     player = new sprite.Player();
 
     app.stage.addChild(player.image);
-
 
     console.log("PIXI.loader.load()");
 
@@ -89,8 +139,10 @@ function setup() {
 
         shot(_b);
     }
-    var shot_rainbow_bullet = function() {
+    var shot_rainbow_bullet = function(ev) {
         console.log('shot rainbow');
+
+		show_ripple(ev)
 
         var _b = new sprite.RainbowBullet(player.image.x + player.image.width / 2,
                                           player.image.y + player.image.height / 2);
@@ -123,7 +175,7 @@ function setup() {
 
     app.stage.interactive = true;
     // app.stage.click = _ => shot_bullet(0xffffff);
-    app.stage.on('pointerdown', _ => shot_rainbow_bullet())
+    app.stage.on('pointerdown', ev => shot_rainbow_bullet(ev))
 
     // window.onkeyup = function(e) {}
     window.onkeydown = function(e) {
