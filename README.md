@@ -20,6 +20,14 @@ Run:
 
 ===
 
+---
+
+# Usage of CommonJS
+``` bash
+$ cd static/js
+$ commonjs --src src --dest module --client
+```
+
 # Electron
 
 ```bash
