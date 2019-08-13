@@ -105,6 +105,7 @@ function Player(_color = 0xff0000) {
 
     this.image = new PIXI.Sprite(PIXI.loader.resources["images/dog.png"].texture);
     this.image.tint = 0xff00ff;
+    this.image.anchor.set(0.5);
 }
 
 /* explosion */

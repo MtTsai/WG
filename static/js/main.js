@@ -23,20 +23,17 @@ const sprite = require('sprite');
 
 class Ripple {
   constructor(x, y, stage) {
-    // sprite
-    // https://i.imgur.com/kr2RVKW.png
-    // http://i.imgur.com/MfPhT1Y.png
-    this.sprite = PIXI.Sprite.fromImage("http://i.imgur.com/MfPhT1Y.png");
+    this.sprite = new PIXI.Sprite.fromImage("images/ripple.png");
     this.sprite.anchor.set(0.5);
     this.sprite.position.set(x, y);
-    this.sprite.scale.set(8);
+    this.sprite.scale.set(4);
     stage.addChild(this.sprite);
     this.filter = new PIXI.filters.DisplacementFilter(this.sprite);
   }
 
   update() {
-    this.sprite.scale.x += 0.1;
-    this.sprite.scale.y += 0.1;
+    this.sprite.scale.x += 1.5;
+    this.sprite.scale.y += 1.5;
   }
 }
 
@@ -50,16 +47,16 @@ function setup() {
     app.renderer.resize(land.width, land.height);
 
 
-    /* ripple */
-    var displace = PIXI.Sprite.fromImage("http://i.imgur.com/2yYayZk.png");
+    /* refraction filter */
+    var displace = PIXI.Sprite.fromImage("images/ink.png");
     var filter = new PIXI.filters.DisplacementFilter(displace);
     filter.autoFit = true;
     displace.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
     displace.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
     displace.scale.y = 1;
     displace.scale.x = 1;
-
     bg.addChild(displace);
+
     bg.addChild(land);
 
 	let ripples = [];
@@ -67,13 +64,10 @@ function setup() {
 		ripples.forEach(ripple => ripple.update());
 	});
 
-	bg.filter = [filter, ...ripples.map(f => f.filter)];
-
-	let show_ripple = ev => {
+	let show_ripple = function (x, y) {
         console.log('shot ripple');
-	    var {x, y} = ev.data.getLocalPosition(bg);
 	    ripples.push(new Ripple(x, y, bg));
-	    bg.filters = [filter, ...ripples.map(f => f.filter)];
+	    bg.filters = [...ripples.map(f => f.filter)];
 	};
 
     /* Play */
@@ -94,8 +88,8 @@ function setup() {
         var targetX = mouseX - player.image.width / 2;
         var targetY = mouseY - player.image.height / 2;
 
-        player.image.x += (targetX - player.image.x) * 0.0625;
-        player.image.y += (targetY - player.image.y) * 0.0625;
+        player.image.x += (mouseX - player.image.x) * 0.0625;
+        player.image.y += (mouseY - player.image.y) * 0.0625;
     });
 
     var shot = function(_b) {
@@ -109,7 +103,7 @@ function setup() {
 
         _b.ticker.add(function(delta) {
             // move
-            _b.image.x += 1;
+            _b.image.x += (_b.elapsed / 100 < 1) ? (1) : (_b.elapsed / 100);
             // enlarge
             _b.set_radius((300 - _b.elapsed) / 10)
 
@@ -133,8 +127,10 @@ function setup() {
     var shot_bullet = function(_color) {
         console.log('shot');
 
-        var _b = new sprite.Bullet(player.image.x + player.image.width / 2,
-                                   player.image.y + player.image.height / 2,
+		show_ripple(player.image.x, player.image.y)
+
+        var _b = new sprite.Bullet(player.image.x,
+                                   player.image.y,
                                    _color);
 
         shot(_b);
@@ -142,10 +138,8 @@ function setup() {
     var shot_rainbow_bullet = function(ev) {
         console.log('shot rainbow');
 
-		show_ripple(ev)
-
-        var _b = new sprite.RainbowBullet(player.image.x + player.image.width / 2,
-                                          player.image.y + player.image.height / 2);
+        var _b = new sprite.RainbowBullet(player.image.x,
+                                          player.image.y);
 
         shot(_b);
     }
@@ -175,17 +169,17 @@ function setup() {
 
     app.stage.interactive = true;
     // app.stage.click = _ => shot_bullet(0xffffff);
-    app.stage.on('pointerdown', ev => shot_rainbow_bullet(ev))
+    app.stage.on('pointerdown', _ => shot_bullet())
 
     // window.onkeyup = function(e) {}
     window.onkeydown = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
     
         if (key == 32) { // space
-            shot_rainbow_bullet()
+            shot_bullet()
         }
         if (key == 87) { // W
-            shot_bullet()
+            shot_rainbow_bullet()
         }
     }
 }
