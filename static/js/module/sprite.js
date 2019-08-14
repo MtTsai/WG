@@ -97,7 +97,7 @@ Clover.prototype.set_radius = function(radius) {
 }
 
 /* player */
-function Player(_color = 0xff0000) {
+function Player(_color = 0xff0000, reverse = false) {
     // var dog = new PIXI.Sprite(PIXI.loader.resources["images/dog.png"].texture);
     // var rect = new_rect(_color, 0, 0, dog.width, dog.height);
     // rect.mask = dog
@@ -106,8 +106,10 @@ function Player(_color = 0xff0000) {
     // this.image.addChild(dog)
 
     this.image = new PIXI.Sprite(PIXI.loader.resources["images/dog.png"].texture);
-    this.image.tint = 0xff00ff;
+    this.image.tint = _color;
     this.image.anchor.set(0.5);
+
+    this.image.scale.x *= (reverse) ? -1 : 1;
 }
 
 /* explosion */
