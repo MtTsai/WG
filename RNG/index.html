@@ -59,7 +59,7 @@ p {
     <span id="upload_icon">➕</span>
   </label>
 </p>
-
+<p id="filename" align="center" text-align="center"></p>
 
 <script>
  /*
@@ -154,8 +154,9 @@ p {
 				display_text.push(v);
 			}
 			
-			document.getElementById("upload_icon").innerHTML = "";
+			// document.getElementById("upload_icon").innerHTML = "";
 			// document.getElementById("demo").innerHTML = "Random from Ranking";
+			document.getElementById("filename").innerHTML = obj.files[0].name;
         };
         if(rABS) {
             reader.readAsArrayBuffer(f);
