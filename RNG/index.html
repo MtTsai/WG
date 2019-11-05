@@ -1,0 +1,169 @@
+ <html>
+	<head>
+	<meta charset="utf-8">
+	<title> MT & EGG </title>
+	
+	<script src="xlsx.full.min.js"></script>
+	
+	</head>
+	
+ <style>
+html {
+  height: 100%;
+}
+/*
+body {
+  background-image: url('popo.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: contain;
+  background-position:center bottom;
+}
+*/
+.upload_cover {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  // text-align: center;
+  cursor: pointer;
+  // background: #EFEFEF;
+}
+.upload_icon {
+  font-weight: bold;
+  font-size: 180%;
+  // position: absolute;
+  left: 0;
+  width: 100%;
+  top: 20%;
+}
+#clickimg {
+  width: 20%;
+  cursor: pointer;
+}
+#demo {
+  font-size: 180%;
+}
+</style> 
+ <body>
+
+<p align="center">
+  <label class="upload_cover" >
+    <input style="display:none;" type="file"onchange="importExcel(this)" />
+    <span class="upload_icon">➕</span>
+  </label>
+
+<br>
+<br>
+
+<p id="demo" align="center" text-align="center">---</p>
+</p>
+<br>
+
+<p align="center">
+<img id="clickimg" src="popo.png" onclick="RNG()">
+</p>
+
+
+<script>
+ /*
+    Reference: https://github.com/SheetJS/sheetjs
+    FileReader共有4種讀取方法：
+    1.readAsArrayBuffer(file)：將檔案讀取為ArrayBuffer。
+    2.readAsBinaryString(file)：將檔案讀取為二進位制字串
+    3.readAsDataURL(file)：將檔案讀取為Data URL
+    4.readAsText(file, [encoding])：將檔案讀取為文字，encoding預設值為'UTF-8'
+                 */
+    var wb;//讀取完成的資料
+    var aa=[];
+    var text=[];
+    var rABS = false; //是否將檔案讀取為二進位制字串
+
+    function getRandom(x){
+        return Math.floor(Math.random()*x);
+    };
+	
+	var display_text = [];
+	
+	function go() {
+		if (go.count > 0) {
+			var count = display_text.length;
+			document.getElementById("demo").innerHTML = display_text[getRandom(count)];
+			go.count--;
+			window.setTimeout(go, 10)
+		}
+	};
+	
+	function RNG() {
+
+		if (display_text.length == 0) {
+		    for (i = 1; i <= 300; i++) {
+				display_text.push(i);
+			}
+		}
+		
+		go.count = 60;
+		go();		
+	};
+	
+    function importExcel(obj) {//匯入
+        if(!obj.files) {
+            return;
+        }
+        const IMPORTFILE_MAXSIZE = 1*204800;//這裡可以自定義控制匯入檔案大小
+        var suffix = obj.files[0].name.split(".")[1]
+        if(suffix != 'xls' && suffix !='xlsx'){
+            alert('匯入的檔案格式不正確!')
+            return
+        }
+        if(obj.files[0].size/1024 > IMPORTFILE_MAXSIZE){
+            alert('匯入的表格檔案不能大於200M')
+            return
+        }
+        var f = obj.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+            if(rABS) {
+                wb = XLSX.read(btoa(fixdata(data)), {//手動轉化
+                    type: 'base64'
+                });
+            } else {
+                wb = XLSX.read(data, {
+                    type: 'binary'
+                });
+            }
+            // wb.SheetNames[0]是獲取Sheets中第一個Sheet的名字
+            // wb.Sheets[Sheet名]獲取第一個Sheet的資料
+            // aa=JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+            // var u = eval('('+aa+')');  
+            // document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+            //獲取表格中為address的那列存入text中
+            // for (var i=0;i<u.length;i++){
+            //     text.push(u[i].address);
+            // }
+			sheet = wb.Sheets["Final Scores"]
+			var player_map = new Map();
+			player_map.clear();
+			for (let key in sheet) {
+			    if (key.startsWith('B') && key != 'B3') {
+				    new_key = parseInt(key.substr(1), 10);
+					player_map.set(new_key, sheet["B" + new_key].v)
+				}
+			}
+			
+			display_text = []
+			
+			for (let [k, v] of player_map) {
+				display_text.push(v);
+			}
+			
+			document.getElementById("demo").innerHTML = "Random from Ranking";
+        };
+        if(rABS) {
+            reader.readAsArrayBuffer(f);
+        } else {
+            reader.readAsBinaryString(f);
+        }
+    }
+</script>
+</body>
