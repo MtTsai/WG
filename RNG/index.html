@@ -28,7 +28,7 @@ body {
   cursor: pointer;
   // background: #EFEFEF;
 }
-.upload_icon {
+#upload_icon {
   font-weight: bold;
   font-size: 180%;
   // position: absolute;
@@ -41,26 +41,20 @@ body {
   cursor: pointer;
 }
 #demo {
-  font-size: 380%;
+  font-size: 888%;
 }
 </style> 
  <body>
 
+<p id="demo" align="center" text-align="center">___</p>
+<p align="center">
+<img id="clickimg" src="popo.png" onclick="RNG()">
+</p>
 <p align="center">
   <label class="upload_cover" >
     <input style="display:none;" type="file"onchange="importExcel(this)" />
-    <span class="upload_icon">➕</span>
+    <span id="upload_icon">➕</span>
   </label>
-
-<br>
-<br>
-
-<p id="demo" align="center" text-align="center">___</p>
-</p>
-<br>
-
-<p align="center">
-<img id="clickimg" src="popo.png" onclick="RNG()">
 </p>
 
 
@@ -157,7 +151,8 @@ body {
 				display_text.push(v);
 			}
 			
-			document.getElementById("demo").innerHTML = "Random from Ranking";
+			document.getElementById("upload_icon").innerHTML = "";
+			// document.getElementById("demo").innerHTML = "Random from Ranking";
         };
         if(rABS) {
             reader.readAsArrayBuffer(f);
