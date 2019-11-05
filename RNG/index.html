@@ -8,10 +8,10 @@
 	</head>
 	
  <style>
+/*
 html {
   height: 100%;
 }
-/*
 body {
   background-image: url('popo.png');
   background-repeat: no-repeat;
@@ -40,26 +40,189 @@ body {
   width: 30%;
   cursor: pointer;
 }
-#demo {
+#disp_text {
   font-size: 888%;
+}
+#div1 {
+  width: 50%;
+  float: left;
+}
+#div2 {
+  width: 50%;
+  float: right;
 }
 p {
   margin-bottom: 0;
 }
+
+body, html {
+  background-color: #1d1c25;
+  margin: 0;
+  padding: 0;
+}
+
+.range {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: absolute;
+  // position: relative;
+  // left: 50%;
+  // top: 50%;
+  // width: 200px;
+  // margin-top: 10px;
+  transform: translate(-50%, -50%);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  background: rgba(59,173,227,1);
+  background: -moz-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(59,173,227,1)), color-stop(25%, rgba(87,111,230,1)), color-stop(51%, rgba(152,68,183,1)), color-stop(100%, rgba(255,53,127,1)));
+  background: -webkit-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -o-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -ms-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
+  height: 2px;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]::-moz-range-track {
+  -moz-appearance: none;
+  background: rgba(59,173,227,1);
+  background: -moz-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(59,173,227,1)), color-stop(25%, rgba(87,111,230,1)), color-stop(51%, rgba(152,68,183,1)), color-stop(100%, rgba(255,53,127,1)));
+  background: -webkit-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -o-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: -ms-linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  background: linear-gradient(45deg, rgba(59,173,227,1) 0%, rgba(87,111,230,1) 25%, rgba(152,68,183,1) 51%, rgba(255,53,127,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
+  height: 2px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 2px solid;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  max-width: 80px;
+  position: relative;
+  bottom: 11px;
+  background-color: #1d1c25;
+  cursor: -webkit-grab;
+
+  -webkit-transition: border 1000ms ease;
+  transition: border 1000ms ease;
+}
+
+input[type=range]::-moz-range-thumb {
+  -moz-appearance: none;
+  border: 2px solid;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  max-width: 80px;
+  position: relative;
+  bottom: 11px;
+  background-color: #1d1c25;
+  cursor: -moz-grab;
+  -moz-transition: border 1000ms ease;
+  transition: border 1000ms ease;
+}
+
+
+
+.range.blue::-webkit-slider-thumb {
+   border-color: rgb(59,173,227);
+}
+
+.range.ltpurple::-webkit-slider-thumb {
+   border-color: rgb(87,111,230);
+}
+
+.range.purple::-webkit-slider-thumb {
+   border-color: rgb(152,68,183);
+}
+
+.range.pink::-webkit-slider-thumb {
+   border-color: rgb(255,53,127);
+}
+
+.range.blue::-moz-range-thumb {
+   border-color: rgb(59,173,227);
+}
+
+.range.ltpurple::-moz-range-thumb {
+   border-color: rgb(87,111,230);
+}
+
+.range.purple::-moz-range-thumb {
+   border-color: rgb(152,68,183);
+}
+
+.range.pink::-moz-range-thumb {
+   border-color: rgb(255,53,127);
+}
+
+input[type=range]::-webkit-slider-thumb:active {
+  cursor: -webkit-grabbing;
+}
+
+input[type=range]::-moz-range-thumb:active {
+  cursor: -moz-grabbing;
+}
+
+button.button {
+  border-radius: 100rem;
+  padding: 1rem;
+  font-family: 'Avenir Next';
+  font-size: 1rem;
+  padding: .5rem 3rem;
+  color: $color-black;
+  box-shadow: 0 0 6px 0 rgba(157, 96, 212, 0.5);
+  border: solid 3px transparent;
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), linear-gradient(101deg, #78e4ff, #ff48fa);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 2px 1000px 1px #fff inset;
+}
+
+button.button:hover {
+  box-shadow: none;
+  color: white;
+}
 </style> 
  <body>
 
-<p id="demo" align="center" text-align="center">___</p>
+<p id="disp_text" align="center" text-align="center">___</p>
 <p align="center">
-<img id="clickimg" src="popo.png" onclick="RNG()">
+  <img id="clickimg" src="popo.png" onclick="RNG()">
 </p>
-<p align="center">
-  <label class="upload_cover" >
-    <input style="display:none;" type="file"onchange="importExcel(this)" />
-    <span id="upload_icon">➕</span>
-  </label>
-</p>
-<p id="filename" align="center" text-align="center"></p>
+
+<div id="div1">
+  <br>
+  <p align="center"> <input id="disp" type="range" min="300" max="1200" value="888" class="range blue" oninput="disp_change()"/> </p>
+  <br>
+  <p align="center"> <input id="popo" type="range" min="10" max="50" value="30" class="range blue" oninput="popo_change()"/> </p>
+  <br>
+  <p align="center"> <button class="button" onclick="setup_done()">Setup Done</button> </p>
+</div>
+<div id="div2">
+  <p align="center">
+    <label class="upload_cover" >
+      <input style="display:none;" type="file" onchange="importExcel(this)" />
+      <span id="upload_icon">➕</span>
+    </label>
+  </p>
+  <p id="filename" align="center" text-align="center"></p>
+</div>
+
+
+
 
 <script>
  /*
@@ -84,7 +247,7 @@ p {
 	function go() {
 		if (go.count > 0) {
 			var count = display_text.length;
-			document.getElementById("demo").innerHTML = display_text[getRandom(count)];
+			document.getElementById("disp_text").innerHTML = display_text[getRandom(count)];
 			go.count--;
 			window.setTimeout(go, 10)
 		}
@@ -133,7 +296,7 @@ p {
             // wb.Sheets[Sheet名]獲取第一個Sheet的資料
             // aa=JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
             // var u = eval('('+aa+')');  
-            // document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+            // document.getElementById("disp_text").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
             //獲取表格中為address的那列存入text中
             // for (var i=0;i<u.length;i++){
             //     text.push(u[i].address);
@@ -155,7 +318,7 @@ p {
 			}
 			
 			// document.getElementById("upload_icon").innerHTML = "";
-			// document.getElementById("demo").innerHTML = "Random from Ranking";
+			// document.getElementById("disp_text").innerHTML = "Random from Ranking";
 			document.getElementById("filename").innerHTML = obj.files[0].name;
         };
         if(rABS) {
@@ -163,6 +326,27 @@ p {
         } else {
             reader.readAsBinaryString(f);
         }
+    }
+    function disp_change() {
+        var v = document.getElementById('disp').value;
+        var disp_text = document.getElementById('disp_text');
+        disp_text.style.fontSize = v + "%";
+    }
+    function popo_change() {
+        var v = document.getElementById('popo').value;
+        var popo = document.getElementById('clickimg');
+        popo.style.width = v + "%"
+    }
+    function removeElement(elementId) {
+        var element = document.getElementById(elementId);
+        element.parentNode.removeChild(element);
+    }
+    function setup_done() {
+        removeElement("div1");
+
+        var div2 = document.getElementById("div2");
+        div2.style.float = "center";
+        div2.style.width = "100%";
     }
 </script>
 </body>
