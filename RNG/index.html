@@ -40,7 +40,9 @@ body {
   cursor: pointer;
 }
 #disp_text {
-  font-size: 888%;
+  font-family: Courier, 微軟正黑體;
+  height: 88px;
+  font-size: 88px;
 }
 #div1 {
   width: 50%;
@@ -199,14 +201,16 @@ button.button:hover {
 
  <body>
 
-<p id="disp_text" style="color:white" align="center" text-align="center">___</p>
+<div id="div0">
+<p id="disp_text" style="color:white" align="center" vertical-align="center">___</p>
+</div>
 <p align="center">
   <img id="clickimg" src="popo.png" onclick="RNG()">
 </p>
 
 <div id="div1">
   <br>
-  <p align="center"> <input id="disp" type="range" min="300" max="1200" value="888" class="range blue" oninput="disp_change()"/> </p>
+  <p align="center"> <input id="disp" type="range" min="30" max="200" value="88" class="range blue" oninput="disp_change()"/> </p>
   <br>
   <p align="center"> <input id="popo" type="range" min="10" max="50" value="30" class="range blue" oninput="popo_change()"/> </p>
   <br>
@@ -219,7 +223,7 @@ button.button:hover {
       <span id="upload_icon">➕</span>
     </label>
   </p>
-  <p id="filename" style="color:white" align="center" text-align="center">...</p>
+  <p id="filename" style="color:white" align="center">...</p>
   <p align="center"> <button class="button" onclick="file_setup_done()">Hide</button> </p>
 </div>
 
@@ -329,12 +333,15 @@ button.button:hover {
     function disp_change() {
         var v = document.getElementById('disp').value;
         var disp_text = document.getElementById('disp_text');
-        disp_text.style.fontSize = v + "%";
+		disp_text.style.height = v + "px";
+		disp_text.style.fontSize = v + "px";
+		console.log("text: " + v + "px")
     }
     function popo_change() {
         var v = document.getElementById('popo').value;
         var popo = document.getElementById('clickimg');
         popo.style.width = v + "%"
+		console.log("popo: " + v + "%")
     }
     function removeElement(elementId) {
         var element = document.getElementById(elementId);
