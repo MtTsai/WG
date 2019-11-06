@@ -218,7 +218,7 @@ button.button:hover {
 </div>
 <div id="div2">
   <p align="center">
-    <label class="upload_cover" >
+    <label id="drop_area" class="upload_cover">
       <input style="display:none;" type="file" onchange="importExcel(this)" />
       <span id="upload_icon" style="color:white">➕</span>
     </label>
@@ -228,6 +228,21 @@ button.button:hover {
 </div>
 
 <script>
+let dropArea = document.getElementById('drop_area');
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false)
+});
+function preventDefaults (e) {
+  e.preventDefault()
+  e.stopPropagation()
+}
+dropArea.addEventListener('drop', handleDrop, false)
+
+function handleDrop(e) {
+  let dt = e.dataTransfer
+  let files = dt.files
+  importExcel(dt);
+}
  /*
     Reference: https://github.com/SheetJS/sheetjs
     FileReader共有4種讀取方法：
@@ -301,6 +316,7 @@ button.button:hover {
         }
         var f = obj.files[0];
         var reader = new FileReader();
+		var filename = obj.files[0].name
         reader.onload = function(e) {
             var data = e.target.result;
             if(rABS) {
@@ -328,8 +344,7 @@ button.button:hover {
 			for (let [k, v] of player_map) {
 				display_text.push(v);
 			}
-			
-			document.getElementById("filename").innerHTML = obj.files[0].name;
+			document.getElementById("filename").innerHTML = filename;
         };
         if(rABS) {
             reader.readAsArrayBuffer(f);
