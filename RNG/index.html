@@ -223,7 +223,7 @@ button.button:hover {
       <span id="upload_icon" style="color:white">➕</span>
     </label>
   </p>
-  <p id="filename" style="color:white" align="center">...</p>
+  <p id="filename" style="color:white" align="center">___</p>
   <p align="center"> <button class="button" onclick="file_setup_done()">Hide</button> </p>
 </div>
 
@@ -346,6 +346,7 @@ button.button:hover {
     function removeElement(elementId) {
         var element = document.getElementById(elementId);
         element.parentNode.removeChild(element);
+		console.log("remove element: " + elementId)
     }
 	function size_setup_done() {
         removeElement("div1");
