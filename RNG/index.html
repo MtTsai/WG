@@ -237,7 +237,6 @@ button.button:hover {
     4.readAsText(file, [encoding])：將檔案讀取為文字，encoding預設值為'UTF-8'
                  */
     var wb;//讀取完成的資料
-    var aa=[];
     var text=[];
     var rABS = false; //是否將檔案讀取為二進位制字串
 
@@ -249,10 +248,25 @@ button.button:hover {
 	
 	function go() {
 		if (go.count > 0) {
-			var count = display_text.length;
-			document.getElementById("disp_text").innerHTML = display_text[getRandom(count)];
 			go.count--;
-			window.setTimeout(go, 10)
+			var count = display_text.length;
+			var disp_text = document.getElementById("disp_text");
+			if (go.count == 0) {
+				disp_text.style.color = "yellow";
+				disp_text.style.fontWeight = "bold";
+			}
+			else {
+				disp_text.innerHTML = display_text[getRandom(count)];
+			}
+			var elapsed_time = 10;
+			if (go.count == 1) {
+				elapsed_time = 1000;	
+			} else if (go.count <= 3) {
+				elapsed_time = 500;
+			} else if (go.count <= 9) {
+			    elapsed_time = (100 - go.count * go.count) * 3;
+			}
+			window.setTimeout(go, elapsed_time);
 		}
 	};
 	
@@ -264,7 +278,10 @@ button.button:hover {
 			}
 		}
 		
-		go.count = 60;
+		var disp_text = document.getElementById("disp_text");
+		disp_text.style.color = "white"
+		disp_text.style.fontWeight = "normal";
+		go.count = 200;
 		go();		
 	};
 	
@@ -295,15 +312,7 @@ button.button:hover {
                     type: 'binary'
                 });
             }
-            // wb.SheetNames[0]是獲取Sheets中第一個Sheet的名字
-            // wb.Sheets[Sheet名]獲取第一個Sheet的資料
-            // aa=JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-            // var u = eval('('+aa+')');  
-            // document.getElementById("disp_text").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-            //獲取表格中為address的那列存入text中
-            // for (var i=0;i<u.length;i++){
-            //     text.push(u[i].address);
-            // }
+			
 			sheet = wb.Sheets["Final Scores"]
 			var player_map = new Map();
 			player_map.clear();
@@ -320,8 +329,6 @@ button.button:hover {
 				display_text.push(v);
 			}
 			
-			// document.getElementById("upload_icon").innerHTML = "";
-			// document.getElementById("disp_text").innerHTML = "Random from Ranking";
 			document.getElementById("filename").innerHTML = obj.files[0].name;
         };
         if(rABS) {
