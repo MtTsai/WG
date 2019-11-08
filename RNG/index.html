@@ -39,10 +39,17 @@ body {
   width: 30%;
   cursor: pointer;
 }
+#retry {
+  cursor: pointer;
+  color: white;
+}
+#show_control {
+  cursor: pointer;
+}
 #disp_text {
   font-family: Courier, 微軟正黑體;
-  height: 88px;
-  font-size: 88px;
+  height: 188px;
+  font-size: 188px;
 }
 #div1 {
   width: 50%;
@@ -206,11 +213,12 @@ button.button:hover {
 </div>
 <p align="center">
   <img id="clickimg" src="popo.png" onclick="RNG()">
+  <br>
+  <span id="retry" style="visibility:hidden" onclick="retry()">↻</span>
 </p>
-
 <div id="div1">
   <br>
-  <p align="center"> <input id="disp" type="range" min="30" max="200" value="88" class="range blue" oninput="disp_change()"/> </p>
+  <p align="center"> <input id="disp" type="range" min="30" max="200" value="188" class="range blue" oninput="disp_change()"/> </p>
   <br>
   <p align="center"> <input id="popo" type="range" min="10" max="50" value="30" class="range blue" oninput="popo_change()"/> </p>
   <br>
@@ -225,6 +233,10 @@ button.button:hover {
   </p>
   <p id="filename" style="color:white" align="center">___</p>
   <p align="center"> <button class="button" onclick="file_setup_done()">Hide</button> </p>
+</div>
+
+<div style="clear:both" align="right">
+  <span id="show_control" style="color:white" onclick="show_control()">⚙</span>
 </div>
 
 <script>
@@ -243,6 +255,21 @@ function handleDrop(e) {
   let files = dt.files
   importExcel(dt);
 }
+    function removeElement(elementId) {
+        var element = document.getElementById(elementId);
+        element.parentNode.removeChild(element);
+		console.log("remove element: " + elementId)
+    }
+    function hideElement(elementId) {
+        var element = document.getElementById(elementId);
+		console.log("hide element: " + elementId);
+        element.style.visibility = "hidden";
+    }
+    function showElement(elementId) {
+        var element = document.getElementById(elementId);
+		console.log("show element: " + elementId)
+        element.style.visibility = "visible";
+    }
  /*
     Reference: https://github.com/SheetJS/sheetjs
     FileReader共有4種讀取方法：
@@ -286,6 +313,7 @@ function handleDrop(e) {
 	};
 	
 	function RNG() {
+        showElement("retry");
 
 		if (display_text.length == 0) {
 		    for (i = 1; i <= 300; i++) {
@@ -352,6 +380,13 @@ function handleDrop(e) {
             reader.readAsBinaryString(f);
         }
     }
+    function retry() {
+        var disp_text = document.getElementById('disp_text');
+        go.count = 0;
+        disp_text.innerHTML = "___";
+        disp_text.style.color = "white";
+        hideElement("retry")
+    }
     function disp_change() {
         var v = document.getElementById('disp').value;
         var disp_text = document.getElementById('disp_text');
@@ -365,20 +400,18 @@ function handleDrop(e) {
         popo.style.width = v + "%"
 		console.log("popo: " + v + "%")
     }
-    function removeElement(elementId) {
-        var element = document.getElementById(elementId);
-        element.parentNode.removeChild(element);
-		console.log("remove element: " + elementId)
-    }
 	function size_setup_done() {
-        removeElement("div1");
+        hideElement("div1");
     }
     function file_setup_done() {
-        removeElement("div2");
+        hideElement("div2");
 
-        // var div2 = document.getElementById("div2");
         // div2.style.float = "center";
         // div2.style.width = "100%";
+    }
+    function show_control() {
+        showElement("div1");
+        showElement("div2");
     }
 </script>
 </body>
